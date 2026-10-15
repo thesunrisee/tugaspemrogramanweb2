@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tracking DO | SITTA</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="brand"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#book"></use></svg> SITTA — Bahan Ajar UT</div>
+    <nav>
+      <a href="index.html">Beranda</a>
+      <a href="stok.html">Stok Bahan Ajar</a>
+      <a href="tracking.html" class="aktif">Tracking DO</a>
+    </nav>
+  </header>
+
+  <main class="container" id="tracking-app">
+    <h1>Tracking Delivery Order</h1>
+    <p class="subjudul">
+      Lacak status pengiriman bahan ajar. Saat ini ada
+      <strong v-text="jumlahDO"></strong> Delivery Order tercatat.
+    </p>
+
+    <!-- Pencarian DO -->
+    <section class="card">
+      <h2>Lacak Pengiriman</h2>
+      <form @submit.prevent="cariTracking">
+        <div class="toolbar">
+          <div class="field" style="flex:1; min-width:220px">
+            <label for="cari">Nomor DO</label>
+            <input type="text" id="cari" v-model="cariDO"
+                   placeholder="cth: DO2025-0001" style="text-transform:uppercase">
+          </div>
+          <button type="submit" class="btn btn-primer"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#search"></use></svg> Lacak</button>
+        </div>
+      </form>
+
+      <!-- Hasil: ditemukan -->
+      <div v-if="sudahMencari && hasilCari">
+        <h3>Hasil Pelacakan: <span v-text="hasilCari.nomor"></span></h3>
+        <table>
+          <tbody>
+            <tr><td><strong>NIM</strong></td><td>{{ hasilCari.nim }}</td></tr>
+            <tr><td><strong>Nama</strong></td><td>{{ hasilCari.nama }}</td></tr>
+            <tr>
+              <td><strong>Status</strong></td>
+              <td>
+                <span class="badge aman" v-if="hasilCari.status === 'Diterima'"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#check"></use></svg> Diterima</span>
+                <span class="badge menipis" v-else-if="hasilCari.status === 'Dalam Perjalanan'"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#truck"></use></svg> Dalam Perjalanan</span>
+                <span class="badge diproses" v-else><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#package"></use></svg> Diproses</span>
+              </td>
+            </tr>
+            <tr><td><strong>Ekspedisi</strong></td><td>{{ hasilCari.ekspedisi }}</td></tr>
+            <tr><td><strong>Paket</strong></td><td>{{ namaPaket(hasilCari.paket) }}</td></tr>
+            <tr><td><strong>Tanggal Kirim</strong></td><td>{{ hasilCari.tanggalKirim }}</td></tr>
+            <tr><td><strong>Total Harga</strong></td><td>{{ formatRupiah(hasilCari.total) }}</td></tr>
+          </tbody>
+        </table>
+
+        <h3 style="margin-top:18px">Riwayat Perjalanan</h3>
+        <ul class="timeline">
+          <li v-for="(langkah, i) in hasilCari.perjalanan" :key="i">
+            <div class="waktu">{{ langkah.waktu }}</div>
+            <div class="ket">{{ langkah.keterangan }}</div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Hasil: tidak ditemukan -->
+      <div class="alert bahaya" v-else-if="sudahMencari && !hasilCari" style="margin-top:14px">
+        Nomor DO <strong>{{ cariDO.toUpperCase() }}</strong> tidak ditemukan.
+        Periksa kembali penomorannya.
+      </div>
+    </section>
+
+    <!-- Form tambah DO -->
+    <section class="card">
+      <h2>
+        Buat Delivery Order Baru
+        <button class="btn btn-sekunder btn-kecil" @click="tampilFormDO = !tampilFormDO" style="margin-left:8px">
+          <span v-if="!tampilFormDO"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#plus"></use></svg> Tampilkan Form</span>
+          <span v-else><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#minus"></use></svg> Sembunyikan</span>
+        </button>
+      </h2>
+
+      <p class="pesan-sukses" v-show="pesanSuksesDO">{{ pesanSuksesDO }}</p>
+
+      <form v-show="tampilFormDO" @submit.prevent="tambahDO">
+        <div class="form-grid">
+          <div class="field">
+            <label>Nomor DO (otomatis)</label>
+            <!-- v-bind one-way: nilai readonly mengikuti nomorDOBaru -->
+            <input type="text" :value="nomorDOBaru" readonly style="background:#f1f3f4">
+          </div>
+          <div class="field">
+            <label>NIM *</label>
+            <input type="text" v-model="form.nim" placeholder="cth: 058089819"
+                   :class="{ salah: errorFormDO.nim }">
+            <span class="pesan-error" v-if="errorFormDO.nim">{{ errorFormDO.nim }}</span>
+          </div>
+          <div class="field">
+            <label>Nama *</label>
+            <input type="text" v-model="form.nama" placeholder="cth: Budi Santoso"
+                   :class="{ salah: errorFormDO.nama }">
+            <span class="pesan-error" v-if="errorFormDO.nama">{{ errorFormDO.nama }}</span>
+          </div>
+          <div class="field">
+            <label>Ekspedisi *</label>
+            <select v-model="form.ekspedisi" :class="{ salah: errorFormDO.ekspedisi }">
+              <option value="">— Pilih ekspedisi —</option>
+              <option v-for="e in pengirimanList" :key="e.kode" :value="e.kode">
+                {{ e.nama }}
+              </option>
+            </select>
+            <span class="pesan-error" v-if="errorFormDO.ekspedisi">{{ errorFormDO.ekspedisi }}</span>
+          </div>
+          <div class="field">
+            <label>Paket Bahan Ajar *</label>
+            <select v-model="form.paketKode" :class="{ salah: errorFormDO.paketKode }">
+              <option value="">— Pilih paket —</option>
+              <option v-for="p in paket" :key="p.kode" :value="p.kode">
+                {{ p.kode }} — {{ p.nama }}
+              </option>
+            </select>
+            <span class="pesan-error" v-if="errorFormDO.paketKode">{{ errorFormDO.paketKode }}</span>
+          </div>
+          <div class="field">
+            <label>Tanggal Kirim *</label>
+            <div style="display:flex; gap:8px">
+              <input type="date" v-model="form.tanggalKirim"
+                     :class="{ salah: errorFormDO.tanggalKirim }" style="flex:1">
+              <button type="button" class="btn btn-sekunder btn-kecil" @click="isiTanggalHariIni"
+                      title="Isi dengan tanggal hari ini (local time)">Hari ini</button>
+            </div>
+            <span class="pesan-error" v-if="errorFormDO.tanggalKirim">{{ errorFormDO.tanggalKirim }}</span>
+          </div>
+          <div class="field">
+            <label>Total Harga (otomatis dari paket)</label>
+            <input type="text" :value="formatRupiah(formTotal)" readonly style="background:#f1f3f4">
+          </div>
+        </div>
+
+        <!-- Detail isi paket: muncul setelah paket dipilih -->
+        <div class="detail-paket" v-if="paketTerpilih">
+          <strong><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#package"></use></svg> {{ paketTerpilih.kode }} — {{ paketTerpilih.nama }}</strong>
+          <ul>
+            <li v-for="kodeMk in paketTerpilih.isi" :key="kodeMk">{{ kodeMk }}</li>
+          </ul>
+          Harga paket: <strong v-text="formatRupiah(paketTerpilih.harga)"></strong>
+        </div>
+
+        <div style="margin-top:14px">
+          <button type="submit" class="btn btn-primer">Buat DO</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Daftar semua DO -->
+    <section class="card">
+      <h2>Daftar Delivery Order</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nomor DO</th>
+              <th>NIM / Nama</th>
+              <th>Ekspedisi</th>
+              <th>Paket</th>
+              <th>Tgl Kirim</th>
+              <th class="kanan">Total</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="doItem in daftarDO" :key="doItem.nomor">
+              <td><strong>{{ doItem.nomor }}</strong></td>
+              <td>{{ doItem.nim }}<br>{{ doItem.nama }}</td>
+              <td>{{ doItem.ekspedisi }}</td>
+              <td>{{ doItem.paket }}</td>
+              <td>{{ doItem.tanggalKirim }}</td>
+              <td class="kanan">{{ formatRupiah(doItem.total) }}</td>
+              <td>
+                <span class="badge aman" v-if="doItem.status === 'Diterima'"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#check"></use></svg> Diterima</span>
+                <span class="badge menipis" v-else-if="doItem.status === 'Dalam Perjalanan'"><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#truck"></use></svg> Dalam Perjalanan</span>
+                <span class="badge diproses" v-else><svg class="ikon-svg" aria-hidden="true" focusable="false"><use href="icons.svg#package"></use></svg> Diproses</span>
+              </td>
+            </tr>
+            <tr v-if="daftarDO.length === 0">
+              <td colspan="7" class="kosong-data">Belum ada Delivery Order.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.7.16/dist/vue.js"></script>
+  <script src="js/dataBahanAjar.js"></script>
+  <script src="js/tracking-app.js"></script>
+</body>
+</html>

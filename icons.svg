@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="book" viewBox="0 0 24 24">
+    <path d="M12 7v14"></path>
+    <path d="M3 18V5a1 1 0 0 1 1-1h4a4 4 0 0 1 4 4 4 4 0 0 1 4-4h4a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-5a3 3 0 0 0-3 2 3 3 0 0 0-3-2H4a1 1 0 0 1-1-1Z"></path>
+  </symbol>
+  <symbol id="package" viewBox="0 0 24 24">
+    <path d="m12 3 9 5-9 5-9-5 9-5Z"></path>
+    <path d="M3 8v9l9 5 9-5V8"></path>
+    <path d="M12 13v9"></path>
+    <path d="m7.5 5.5 9 5"></path>
+  </symbol>
+  <symbol id="truck" viewBox="0 0 24 24">
+    <path d="M3 6h11v12H3z"></path>
+    <path d="M14 10h4l3 3v5h-7z"></path>
+    <circle cx="7.5" cy="18" r="2"></circle>
+    <circle cx="18" cy="18" r="2"></circle>
+  </symbol>
+  <symbol id="search" viewBox="0 0 24 24">
+    <circle cx="10.8" cy="10.8" r="6.8"></circle>
+    <path d="m16 16 5 5"></path>
+  </symbol>
+  <symbol id="check" viewBox="0 0 24 24">
+    <path d="m5 12 4 4L19 6"></path>
+  </symbol>
+  <symbol id="warning" viewBox="0 0 24 24">
+    <path d="m10.3 4.4-8 14A1.8 1.8 0 0 0 3.9 21h16.2a1.8 1.8 0 0 0 1.6-2.6l-8-14a1.9 1.9 0 0 0-3.4 0Z"></path>
+    <path d="M12 9v4"></path>
+    <path d="M12 17h.01"></path>
+  </symbol>
+  <symbol id="close" viewBox="0 0 24 24">
+    <path d="m6 6 12 12M18 6 6 18"></path>
+  </symbol>
+  <symbol id="refresh" viewBox="0 0 24 24">
+    <path d="M20 7v5h-5"></path>
+    <path d="M4 17v-5h5"></path>
+    <path d="M5.6 9a7 7 0 0 1 11.6-2L20 12"></path>
+    <path d="M18.4 15a7 7 0 0 1-11.6 2L4 12"></path>
+  </symbol>
+  <symbol id="plus" viewBox="0 0 24 24">
+    <path d="M12 5v14M5 12h14"></path>
+  </symbol>
+  <symbol id="minus" viewBox="0 0 24 24">
+    <path d="M5 12h14"></path>
+  </symbol>
+</svg>
