@@ -1,0 +1,180 @@
+/* style.css — CSS ringan Tugas Praktik 2 Vue.js (SITTA Bahan Ajar UT) */
+
+:root {
+  --biru: #1a56db;
+  --biru-tua: #123c9e;
+  --hijau: #1a7f37;
+  --hijau-muda: #e6f4ea;
+  --kuning: #b45309;
+  --kuning-muda: #fef3e2;
+  --merah: #c62828;
+  --merah-muda: #fdecec;
+  --abu: #5f6368;
+  --abu-muda: #f1f3f4;
+  --garis: #dadce0;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f7f9fc;
+  color: #202124;
+  line-height: 1.55;
+}
+
+/* ---------- Navigasi atas ---------- */
+.navbar {
+  background: var(--biru);
+  color: #fff;
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.navbar .brand { font-size: 20px; font-weight: 700; letter-spacing: .3px; }
+.ikon-svg {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.badge .ikon-svg { margin-right: 3px; }
+.badge.diproses { background: #e3ecfd; color: #1a56db; }
+.navbar nav a {
+  color: #fff;
+  text-decoration: none;
+  margin-left: 18px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+.navbar nav a:hover, .navbar nav a.aktif { background: rgba(255,255,255,.18); }
+
+.container { max-width: 1180px; margin: 24px auto; padding: 0 20px 40px; }
+
+h1 { font-size: 26px; margin: 6px 0 4px; }
+.subjudul { color: var(--abu); margin-top: 0; }
+
+/* ---------- Kartu ---------- */
+.card {
+  background: #fff;
+  border: 1px solid var(--garis);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+}
+.card h2 { margin-top: 0; font-size: 19px; }
+
+/* ---------- Kartu ringkasan ---------- */
+.ringkasan { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.kotak {
+  background: #fff; border: 1px solid var(--garis); border-radius: var(--radius);
+  padding: 14px 16px; text-align: center;
+}
+.kotak .angka { font-size: 30px; font-weight: 700; }
+.kotak .label { color: var(--abu); font-size: 13px; }
+.kotak.total .angka { color: var(--biru); }
+.kotak.aman .angka { color: var(--hijau); }
+.kotak.menipis .angka { color: var(--kuning); }
+.kotak.kosong .angka { color: var(--merah); }
+
+/* ---------- Badge status ---------- */
+.badge {
+  display: inline-block; padding: 3px 10px; border-radius: 20px;
+  font-size: 12.5px; font-weight: 600; white-space: nowrap;
+}
+.badge.aman { background: var(--hijau-muda); color: var(--hijau); }
+.badge.menipis { background: var(--kuning-muda); color: var(--kuning); }
+.badge.kosong { background: var(--merah-muda); color: var(--merah); }
+
+/* ---------- Tabel ---------- */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+th, td { padding: 10px 12px; border-bottom: 1px solid var(--garis); text-align: left; vertical-align: middle; }
+thead th { background: var(--abu-muda); font-size: 13px; text-transform: uppercase; letter-spacing: .4px; }
+tbody tr:hover { background: #f8fbff; }
+tbody tr.bariskosong td { background: var(--merah-muda); }
+tbody tr.barismenipis td { background: #fff8ec; }
+td.kanan, th.kanan { text-align: right; }
+.kosong-data { text-align: center; color: var(--abu); padding: 26px; }
+
+/* ---------- Form ---------- */
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 16px; }
+.field { display: flex; flex-direction: column; }
+.field label { font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #3c4043; }
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  padding: 9px 11px; border: 1px solid var(--garis); border-radius: 7px; font-size: 14.5px; font-family: inherit;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid #c9dcff; border-color: var(--biru); }
+input.salah, select.salah { border-color: var(--merah); background: #fffafa; }
+.pesan-error { color: var(--merah); font-size: 12.5px; margin-top: 4px; }
+.pesan-sukses { color: var(--hijau); font-weight: 600; }
+
+/* ---------- Tombol ---------- */
+.btn {
+  display: inline-block; border: none; border-radius: 7px; cursor: pointer;
+  padding: 9px 18px; font-size: 14.5px; font-weight: 600; font-family: inherit;
+}
+.btn-primer { background: var(--biru); color: #fff; }
+.btn-primer:hover { background: var(--biru-tua); }
+.btn-sekunder { background: #e8eaed; color: #3c4043; }
+.btn-sekunder:hover { background: #dadce0; }
+.btn-kecil { padding: 5px 12px; font-size: 13px; }
+.btn-bahaya { background: var(--merah); color: #fff; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-bottom: 6px; }
+.toolbar .field { min-width: 170px; }
+
+/* ---------- Timeline tracking ---------- */
+.timeline { list-style: none; padding: 0; margin: 12px 0 0; }
+.timeline li {
+  position: relative; padding: 0 0 16px 30px; border-left: 3px solid var(--garis); margin-left: 8px;
+}
+.timeline li:last-child { border-left-color: transparent; padding-bottom: 4px; }
+.timeline li::before {
+  content: ""; position: absolute; left: -8px; top: 2px; width: 13px; height: 13px;
+  border-radius: 50%; background: var(--biru);
+}
+.timeline .waktu { font-size: 12.5px; color: var(--abu); }
+.timeline .ket { font-weight: 600; }
+
+/* ---------- Detail paket ---------- */
+.detail-paket {
+  background: #f0f6ff; border: 1px dashed var(--biru); border-radius: 8px;
+  padding: 12px 16px; margin-top: 10px; font-size: 14.5px;
+}
+.detail-paket ul { margin: 6px 0 0; padding-left: 20px; }
+
+/* ---------- Alert ---------- */
+.alert {
+  border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; font-size: 14.5px;
+}
+.alert.peringatan { background: var(--kuning-muda); border: 1px solid #f5d9a8; color: #7c4a03; }
+.alert.bahaya { background: var(--merah-muda); border: 1px solid #f3b8b8; color: #8f1d1d; }
+
+/* ---------- Landing page ---------- */
+.hero { text-align: center; padding: 40px 20px 10px; }
+.hero h1 { font-size: 32px; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 26px; }
+.menu-card {
+  display: block; text-decoration: none; color: inherit; background: #fff;
+  border: 1px solid var(--garis); border-radius: 14px; padding: 28px 24px;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.menu-card:hover { transform: translateY(-4px); box-shadow: 0 8px 22px rgba(26,86,219,.12); }
+.menu-card .ikon { font-size: 40px; color: var(--biru); }
+.menu-card h2 { margin: 10px 0 6px; color: var(--biru); }
+.menu-card p { color: var(--abu); margin: 0; }
+.footer { text-align: center; color: var(--abu); font-size: 13px; padding: 24px; }
+
+/* Checkbox inline */
+.check { display: flex; align-items: center; gap: 8px; font-size: 14.5px; padding-bottom: 8px; }
+.check input { width: 17px; height: 17px; }
